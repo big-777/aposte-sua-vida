@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspadinha da Sorte</title>
+    <style>
+        body {
+            background-color: #121214;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #ffb703;
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: #8c8c99;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .card-container {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            background: linear-gradient(135deg, #ffb703, #fb8500);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 12px;
+            box-sizing: border-box;
+        }
+
+        .number-box {
+            background-color: #023047;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #8ecae6;
+            user-select: none;
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 16px;
+            cursor: crosshair;
+            touch-action: none; /* Melhora suporte mobile */
+        }
+
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        button {
+            background-color: #219ebc;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #023047;
+        }
+
+        #result {
+            font-size: 1.4rem;
+            font-weight: bold;
+            height: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ Raspadinha da Sorte ✨</h1>
+    <p>Ache 3 números iguais para ganhar!</p>
+
+    <div style="position: relative;">
+        <!-- Camada de baixo: Números ocultos -->
+        <div class="card-container" id="card-numbers">
+            <div class="number-box">?</div>
+            <div class="number-box">?</div>
+            <div class="number-box">?</div>
+            <div class="number-box">?</div>
+            <div class="number-box">?</div>
+            <div class="number-box">?</div>
+        </div>
+        <!-- Camada de cima: Tela de raspar -->
+        <canvas id="scratch-canvas" width="320" height="220"></canvas>
+    </div>
+
+    <div class="controls">
+        <div id="result"></div>
+        <button onclick="resetGame()">Nova Raspadinha</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('scratch-canvas');
+        const ctx = canvas.getContext('2d');
+        const resultDisplay = document.getElementById('result');
+        let isDrawing = false;
+        let numbers = [];
+
+        function initCanvas() {
+            // Desenha o fundo cinza da raspadinha
+            ctx.fillStyle = '#b5b5bd';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Adiciona um padrão visual/texto na raspadinha
+            ctx.fillStyle = '#71717a';
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('RASPE AQUI 💰', canvas.width / 2, canvas.height / 2 + 5);
+        }
+
+        function generateNumbers() {
+            // Possíveis números da raspadinha
+            const pool =;
+            numbers = [];
+
+            // Define se esta rodada será vencedora (30% de chance)
+            const isWinner = Math.random() < 0.3;
+
+            if (isWinner) {
+                // Escolhe um número para repetir 3 vezes
+                const winningNum = pool[Math.floor(Math.random() * pool.length)];
+                numbers.push(winningNum, winningNum, winningNum);
+                
+                // Preenche os outros 3 espaços com números que não formem outro trio
+                while (numbers.length < 6) {
+                    const randomNum = pool[Math.floor(Math.random() * pool.length)];
+                    if (numbers.filter(x => x === randomNum).length < 2) {
+                        numbers.push(randomNum);
+                    }
+                }
+            } else {
+                // Garante que nenhum número repita 3 vezes (derrota)
+                while (numbers.length < 6) {
+                    const randomNum = pool[Math.floor(Math.random() * pool.length)];
+                    if (numbers.filter(x => x === randomNum).length < 2) {
+                        numbers.push(randomNum);
+                    }
+                }
+            }
+
+            // Força um embaralhamento dos números na cartela
+            numbers.sort(() => Math.random() - 0.5);
+
+            // Renderiza os números no HTML de fundo
+            const boxes = document.querySelectorAll('.number-box');
+            boxes.forEach((box, index) => {
+                box.innerText = numbers[index];
+            });
+        }
+
+        function checkResult() {
+            // Conta as ocorrências de cada número
+            const counts = {};
+            let hasWon = false;
+
+            numbers.forEach(num => {
+                counts[num] = (counts[num] || 0) + 1;
+                if (counts[num] === 3) {
+                    hasWon = true;
+                }
+            });
+
+            if (hasWon) {
+                resultDisplay.style.color = '#00ff66';
+                resultDisplay.innerText = '🎉 VOCÊ GANHOU! 🎉';
+            } else {
+                resultDisplay.style.color = '#ff3333';
+                resultDisplay.innerText = 'Não foi dessa vez! ❌';
+            }
+        }
+
+        // Funções para detectar o efeito de raspar
+        function scratch(e) {
+            if (!isDrawing) return;
+
+            // Pega as coordenadas corretas mesmo com zoom ou scroll
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            // Configura a remoção dos pixels da camada cinza
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2); // Tamanho do "dedo" que raspa
+            ctx.fill();
+        }
+
+        // Eventos para Mouse (PC)
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mouseup', () => { isDrawing = false; checkResult(); });
+        canvas.addEventListener('mousemove', scratch);
+
+        // Eventos para Touch (Celular)
+        canvas.addEventListener('touchstart', () => isDrawing = true);
+        canvas.addEventListener('touchend', () => { isDrawing = false; checkResult(); });
+        canvas.addEventListener('touchmove', scratch);
+
+        function resetGame() {
+            ctx.globalCompositeOperation = 'source-over'; // Reseta modo de desenho
+            resultDisplay.innerText = '';
+            initCanvas();
+            generateNumbers();
+        }
+
+        // Inicializa o jogo ao abrir a página
+        initCanvas();
+        generateNumbers();
+    </script>
+</body>
+</html>

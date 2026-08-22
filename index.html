@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+
+            background-image: url("fundo.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .botao {
+            display: block;
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                filter 0.2s ease;
+        }
+
+        .botao img {
+            display: block;
+            width: 300px;
+            height: auto;
+        }
+
+        .botao:hover {
+            transform: scale(1.08);
+            filter: brightness(1.15);
+        }
+
+        .botao:active {
+            transform: scale(0.96);
+        }
+
+        /* Celular */
+        @media (max-width: 900px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .menu {
+                flex-direction: column;
+                gap: 25px;
+                padding: 40px 0;
+            }
+
+            .botao img {
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="menu">
+
+        <!-- SLOT -->
+        <a href="slot.html" class="botao">
+            <img src="slot.png" alt="Entrar no Slot">
+        </a>
+
+        <!-- ROLETA -->
+        <a href="roleta.html" class="botao">
+            <img src="roleta.png" alt="Entrar na Roleta">
+        </a>
+
+        <!-- RASPADINHA -->
+        <a href="raspadinha.html" class="botao">
+            <img src="raspadinha.png" alt="Entrar na Raspadinha">
+        </a>
+
+    </main>
+
+</body>
+</html>
