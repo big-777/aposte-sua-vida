@@ -1,80 +1,199 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Roleta da Sorte</title>
-<style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:"Segoe UI",Arial,sans-serif;color:#fff;background:radial-gradient(circle at 50% 20%,#292929,#111 45%,#070707);display:flex;justify-content:center}
-.page{width:min(1250px,96vw);padding:35px 20px 50px}header{text-align:center;margin-bottom:35px}h1{margin:0;font-size:clamp(2rem,5vw,3.8rem);letter-spacing:2px;text-shadow:0 0 20px #765f25}.subtitle{margin-top:8px;color:#aaa}
-.layout{display:grid;grid-template-columns:minmax(400px,1fr) minmax(300px,390px);gap:55px;align-items:center}
-.wheel-area{min-height:650px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.wheel-container{position:relative;width:min(570px,75vw);aspect-ratio:1;display:flex;align-items:center;justify-content:center}
-.wheel-shadow{position:absolute;width:94%;height:94%;border-radius:50%;background:#000;filter:blur(25px);opacity:.7}
-.wheel{position:relative;width:100%;height:100%;border-radius:50%;border:12px solid #d6a83b;box-shadow:0 0 0 7px #4b3511,0 0 35px #000,inset 0 0 25px #000;overflow:hidden;transform:rotate(0deg);transition:transform 5s cubic-bezier(.12,.8,.12,1);background:conic-gradient(#b51d2a 0deg 30deg,#151515 30deg 60deg,#b51d2a 60deg 90deg,#151515 90deg 120deg,#b51d2a 120deg 150deg,#151515 150deg 180deg,#b51d2a 180deg 210deg,#151515 210deg 240deg,#b51d2a 240deg 270deg,#151515 270deg 300deg,#b51d2a 300deg 330deg,#151515 330deg 360deg)}
-.wheel:before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(transparent 0deg 29deg,rgba(255,255,255,.55) 29.2deg 30deg);z-index:2}
-.numbers{position:absolute;inset:0;z-index:3}.number{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:900;text-shadow:2px 2px 4px #000;transform:rotate(var(--angle)) translateY(-215px) rotate(calc(var(--angle)*-1))}.green{color:#62e36b}
-.center{position:absolute;z-index:5;width:105px;height:105px;border-radius:50%;background:radial-gradient(circle,#e9c35a,#8b5e16 65%,#3d2708);border:8px solid #241605;box-shadow:0 0 20px #000,inset 0 0 12px #fff5;display:flex;align-items:center;justify-content:center;font-size:2.4rem}
-.pointer{position:absolute;top:-25px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:25px solid transparent;border-right:25px solid transparent;border-top:55px solid #f4d35e;filter:drop-shadow(0 4px 5px #000);z-index:20}
-.result{margin-top:35px;min-height:70px;text-align:center}#result{margin:0;font-size:1.5rem;color:#f4d35e}
-.panel{background:linear-gradient(145deg,#202020,#111);border:1px solid #3b3b3b;border-radius:22px;padding:30px;box-shadow:0 20px 50px #0008}.panel h2{text-align:center;margin-top:0}
-.credits{text-align:center;background:#090909;border-radius:14px;padding:18px;margin-bottom:25px}.credits-label{color:#999;font-size:.9rem}#credits{display:block;margin-top:4px;font-size:2.1rem;font-weight:bold;color:#66e06b}
-.bet-display{text-align:center;margin-bottom:20px;color:#bbb}#currentBet{color:#f4d35e;font-weight:bold}
-.bet-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}button{border:0;border-radius:10px;padding:14px;color:#fff;font-size:1rem;font-weight:bold;cursor:pointer;transition:.18s}button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.15)}button:active:not(:disabled){transform:scale(.97)}
-.bet-button{background:#303030;border:1px solid #555}.bet-button.active{background:#a97918;border-color:#f4d35e;box-shadow:0 0 15px #f4d35e40}.all-in{grid-column:1/-1;background:#762020}
-.spin{width:100%;margin-top:22px;background:linear-gradient(135deg,#b88920,#f4d35e);color:#151515;font-size:1.35rem;padding:18px}.spin:disabled{opacity:.5;cursor:not-allowed}.connect{width:100%;margin-top:15px;background:#185c83}.status{margin-top:12px;text-align:center;color:#999;font-size:.9rem}#arduinoStatus.connected{color:#63df70}
-.info{margin-top:28px;border-top:1px solid #333;padding-top:20px}.info h3{font-size:1rem;color:#f4d35e}.info p{color:#aaa;line-height:1.5;font-size:.9rem}
-.payouts{margin-top:35px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.payout{background:#181818;border:1px solid #333;border-radius:12px;padding:13px;text-align:center}.payout strong{display:block;color:#f4d35e;margin-bottom:5px}
-footer{text-align:center;color:#555;margin-top:40px}@media(max-width:900px){.layout{grid-template-columns:1fr;gap:25px}.wheel-area{min-height:auto}.panel{max-width:600px;width:100%;margin:auto}}@media(max-width:550px){.page{padding:20px 10px 35px}.wheel-container{width:90vw}.number{transform:rotate(var(--angle)) translateY(-34vw) rotate(calc(var(--angle)*-1))}.payouts{grid-template-columns:1fr}.panel{padding:20px}}
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/screen.css">
+    <link rel="stylesheet" href="css/classes.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <title>Document</title>
 </head>
 <body>
-<div class="page">
-<header><h1>🎡 ROLETA DA SORTE</h1><div class="subtitle">Escolha sua aposta, puxe a alavanca e boa sorte!</div></header>
-<div class="layout">
-<section class="wheel-area">
-<div class="wheel-container"><div class="wheel-shadow"></div><div class="pointer"></div><div id="wheel" class="wheel"><div class="numbers" id="numbers"></div><div class="center">🎯</div></div></div>
-<div class="result"><h2 id="result">Escolha uma aposta para começar</h2></div>
-</section>
-<aside class="panel">
-<h2>💰 Apostas</h2>
-<div class="credits"><span class="credits-label">CRÉDITOS</span><span id="credits">1000</span></div>
-<div class="bet-display">Aposta atual: <span id="currentBet">0</span></div>
-<div class="bet-buttons">
-<button class="bet-button" data-value="10">10</button><button class="bet-button" data-value="20">20</button>
-<button class="bet-button" data-value="50">50</button><button class="bet-button" data-value="100">100</button>
-<button class="bet-button all-in" data-value="all">🔥 ALL-IN</button>
-</div>
-<button id="spinButton" class="spin">🎰 GIRAR ROLETA</button>
-<button id="connectArduinoButton" class="connect">🔌 CONECTAR ARDUINO</button>
-<div class="status"><span id="arduinoStatus">Arduino: desconectado</span></div>
-<div class="info"><h3>🕹️ Controles físicos</h3><p>D2 = 10 | D3 = 20 | D4 = 50 | D5 = 100</p><p>D6 = ALL-IN | D7 = ALAVANCA</p></div>
-<div class="payouts"><div class="payout"><strong>VERMELHO</strong>X1</div><div class="payout"><strong>PRETO</strong>X2</div><div class="payout"><strong>VERDE</strong>JACKPOT</div></div>
-</aside>
-</div>
-<footer>Roleta da Sorte • Projeto Arduino + Web Serial</footer>
-</div>
-<script>
-const wheel=document.getElementById("wheel"),result=document.getElementById("result"),creditsDisplay=document.getElementById("credits"),currentBetDisplay=document.getElementById("currentBet"),spinButton=document.getElementById("spinButton"),betButtons=document.querySelectorAll(".bet-button"),connectArduinoButton=document.getElementById("connectArduinoButton"),arduinoStatus=document.getElementById("arduinoStatus");
-let credits=1000,currentBet=0,currentRotation=0,spinning=false;
-const prizes=["Vermelho: X1","Preto: X2","Vermelho: X1","Preto: X2","Vermelho: X1","Verde: JACKPOT!","Vermelho: X1","Preto: X2","Vermelho: X1","Preto: X2","Vermelho: X1","Preto: X2"];
-const numbers=[1,2,3,4,5,0,6,7,8,9,10,11];
-numbers.forEach((n,i)=>{const el=document.createElement("div");el.className="number"+(n===0?" green":"");el.textContent=n;el.style.setProperty("--angle",`${i*30+15}deg`);document.getElementById("numbers").appendChild(el)});
-function updateCredits(){creditsDisplay.textContent=credits} function updateBet(){currentBetDisplay.textContent=currentBet}
-function selectBet(value){if(spinning)return;const b=[...betButtons].find(x=>x.dataset.value===String(value));if(!b)return;if(b.classList.contains("active")){b.classList.remove("active");currentBet-=value}else{document.querySelector('[data-value="all"]').classList.remove("active");b.classList.add("active");currentBet+=value}if(currentBet>credits)currentBet=credits;updateBet()}
-function selectAllIn(){if(spinning||credits<=0)return;betButtons.forEach(b=>b.classList.remove("active"));document.querySelector('[data-value="all"]').classList.add("active");currentBet=credits;updateBet()}
-betButtons.forEach(b=>b.addEventListener("click",()=>b.dataset.value==="all"?selectAllIn():selectBet(Number(b.dataset.value))));
-function spinWheel(){
-if(spinning)return;if(currentBet<=0){result.textContent="⚠️ Escolha uma aposta primeiro!";return}if(currentBet>credits){result.textContent="⚠️ Créditos insuficientes!";return}
-spinning=true;spinButton.disabled=true;betButtons.forEach(b=>b.disabled=true);credits-=currentBet;updateCredits();result.textContent="🎡 A roleta está girando...";
-const prizeIndex=Math.floor(Math.random()*prizes.length),segmentCenter=prizeIndex*30+15,targetAngle=360-segmentCenter+270,normalized=((currentRotation%360)+360)%360;let delta=targetAngle-normalized;if(delta<0)delta+=360;
-currentRotation+= (5+Math.floor(Math.random()*3))*360+delta;wheel.style.transform=`rotate(${currentRotation}deg)`;
-setTimeout(()=>{const prize=prizes[prizeIndex];let win=0;if(prize.includes("JACKPOT")){win=currentBet*20;result.textContent=`🎉 JACKPOT! Você ganhou ${win} créditos!`}else if(prize.includes("X2")){win=currentBet*2;result.textContent=`🖤 ${prize} — ganhou ${win} créditos!`}else{win=currentBet;result.textContent=`❤️ ${prize} — ganhou ${win} créditos!`}credits+=win;updateCredits();spinning=false;spinButton.disabled=false;betButtons.forEach(b=>{b.disabled=false;b.classList.remove("active")});currentBet=0;updateBet()},5000)}
-let serialPort=null,serialReader=null,serialBuffer="";
-async function connectArduino(){if(!("serial"in navigator)){result.textContent="⚠️ Web Serial não é suportado. Use Chrome ou Edge.";return}try{serialPort=await navigator.serial.requestPort();await serialPort.open({baudRate:9600});arduinoStatus.textContent="Arduino: conectado";arduinoStatus.classList.add("connected");connectArduinoButton.textContent="✅ ARDUINO CONECTADO";connectArduinoButton.disabled=true;readArduino()}catch(e){console.error(e);arduinoStatus.textContent="Arduino: erro na conexão";result.textContent="⚠️ Não foi possível conectar ao Arduino."}}
-async function readArduino(){if(!serialPort)return;const decoder=new TextDecoder();try{while(serialPort.readable){serialReader=serialPort.readable.getReader();try{while(true){const{value,done}=await serialReader.read();if(done)break;if(value){serialBuffer+=decoder.decode(value,{stream:true});const lines=serialBuffer.split(/\r?\n/);serialBuffer=lines.pop();lines.forEach(line=>handleArduinoCommand(line.trim().toUpperCase()))}}}finally{serialReader.releaseLock();serialReader=null}}}catch(e){console.error(e);arduinoStatus.textContent="Arduino: desconectado";arduinoStatus.classList.remove("connected")}}
-function handleArduinoCommand(command){switch(command){case"BET10":selectBet(10);break;case"BET20":selectBet(20);break;case"BET50":selectBet(50);break;case"BET100":selectBet(100);break;case"ALLIN":selectAllIn();break;case"SPIN":spinWheel();break}}
-connectArduinoButton.addEventListener("click",connectArduino);spinButton.addEventListener("click",spinWheel);updateCredits();updateBet();
-</script>
+
+    <div class="absolute t-white top10 left10" id="div_t1">00:00:00</div>
+    <div class="absolute t-white top10 right10" id="div_t2">01:00:00</div>
+
+    <div class="center-full">
+        <div class="screen">
+
+            <!-- roleta -->
+            <!-- <div class="fixed w-400 h-400 o-hidden bg-red"> -->
+            <div class="none fixed bottom h-full w-full j-center i-center z-3" id="roullete_group">
+                <div class="w-500 m-auto max-w-full h-500 max-h-full relative flex j-center i-center">
+                    <!-- <img class="absolute w-full h-full" src='imgs/svg/roleta-0.svg' style="transform: translateY(-100px)"> parte de trás -->
+                    <!-- <div class="absolute bg-red" style="transform: translateY(-100px);width: 50%;height: 300px; background-image: url('imgs/jpg/back_wood_2.jpg'); "></div> -->
+                    <img class="absolute w-full max-w-full" src='imgs/png/roullete-1.png'> <!-- roleta fora -->
+                    <div class="rotate-7 w-full h-full flex j-center i-center relative" id="div_roullete">
+                        <img class="w-full absolute" src='imgs/png/roullete-2.png' id="img_roleta_numbers">
+                        <img class="absolute m-auto left right bottom top fall shadow" width="15px" class="z-3" id="img_ball" src="imgs/png/ball_2.png">
+                    </div>
+                </div>
+
+                <!-- history -->
+                <div class="flex j-center">
+                    <div class="historic" id="historic" style="padding: 0px; height: 0px;">
+                        <!-- <div class="ball ball-black">2</div>
+                        <div class="ball ball-red">3</div>
+                        <div class="ball ball-red">4</div>
+                        <div class="ball ball-black">5</div>
+                        <div class="ball ball-red">5</div>
+                        <div class="ball ball-red">6</div>
+                        <div class="ball ball-red">7</div> -->
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            <!-- comeco mesa -->
+
+            <div style="margin: auto; " class="m-w-full max-h-full">
+                <div class="grid grid-col-5 max-w-90p gap-0 transition" style="width: 100%; max-width: 100% ; height: 80vh; " id="div_table" >
+
+                    <div n="dozen1" onmouseout="render.blinkOut()" onmouseover="render.blink('dozen1')" class="vert square cs-2 rs-2 re-5">1 st 12</div>
+                    <div n="to18" onmouseout="render.blinkOut()" onmouseover="render.blink('to18')" class="vert square cs-1 rs-2 re-3">1 to 18</div>
+                    <div n="even" onmouseout="render.blinkOut()" onmouseover="render.blink('even')" class="vert square cs-1 rs-4 re-5">EVEN</div>
+                    <div n="dozen2" onmouseout="render.blinkOut()" onmouseover="render.blink('dozen2')" class="vert square cs-2 rs-6 re-9">2 st 12</div>
+                    <div n="black" onmouseout="render.blinkOut()" onmouseover="render.blink('black')" class="vert square cs-1 rs-8 re-9"> <img width="30px" src="imgs/svg/triangle-black.svg"> </div>
+                    <div n="red" onmouseout="render.blinkOut()" onmouseover="render.blink('red')" class="vert square cs-1 rs-6 re-7"> <img width="30px" src="imgs/svg/triangle-red.svg"> </div>
+                    <div n="dozen3" onmouseout="render.blinkOut()" onmouseover="render.blink('dozen3')" class="vert square cs-2 rs-10 re-13">3 st 12</div>
+                    <div n="odd" onmouseout="render.blinkOut()" onmouseover="render.blink('odd')" class="vert square cs-1 rs-10 re-11">ODD</div>
+                    <div n="to36" onmouseout="render.blinkOut()" onmouseover="render.blink('to36')" class="vert square cs-1 rs-12 re-13">19 to 36</div>
+                    
+                    <div n="0" class="square green cs-3 ce-6 relative">0</div>
+                    <div to18   dozen1  col1    red       odd      n="1"     class="square cs-3">1</div>
+                    <div to18   dozen1  col2    black     even     n="2"     class="square">2</div>
+                    <div to18   dozen1  col3    red       odd      n="3"     class="square">3</div>
+                    <div to18   dozen1  col1    black     even     n="4"     class="square">4</div>
+                    <div to18   dozen1  col2    red       odd      n="5"     class="square">5</div>
+                    <div to18   dozen1  col3    black     even     n="6"     class="square">6</div>
+                    <div to18   dozen1  col1    red       odd      n="7"     class="square">7</div>
+                    <div to18   dozen1  col2    black     even     n="8"     class="square">8</div>
+                    <div to18   dozen1  col3    red       odd      n="9"     class="square">9</div>
+                    <div to18   dozen1  col1    black     even     n="10"    class="square">10</div>
+                    <div to18   dozen1  col2    black     odd      n="11"    class="square">11</div>
+                    <div to18   dozen1  col3    red       even     n="12"    class="square">12</div>
+                    <div to18   dozen2  col1    black     odd      n="13"    class="square">13</div>
+                    <div to18   dozen2  col2    red       even     n="14"    class="square">14</div>
+                    <div to18   dozen2  col3    black     odd      n="15"    class="square">15</div>
+                    <div to18   dozen2  col1    red       even     n="16"    class="square">16</div>
+                    <div to18   dozen2  col2    black     odd      n="17"    class="square">17</div>
+                    <div to18   dozen2  col3    red       even     n="18"    class="square">18</div>
+                    <div to36   dozen2  col1    red       odd      n="19"    class="square">19</div>
+                    <div to36   dozen2  col2    black     even     n="20"    class="square">20</div>
+                    <div to36   dozen2  col3    red       odd      n="21"    class="square">21</div>
+                    <div to36   dozen2  col1    black     even     n="22"    class="square">22</div>
+                    <div to36   dozen2  col2    red       odd      n="23"    class="square">23</div>
+                    <div to36   dozen2  col3    black     even     n="24"    class="square">24</div>
+                    <div to36   dozen3  col1    red       odd      n="25"    class="square">25</div>
+                    <div to36   dozen3  col2    black     even     n="26"    class="square">26</div>
+                    <div to36   dozen3  col3    red       odd      n="27"    class="square">27</div>
+                    <div to36   dozen3  col1    black     even     n="28"    class="square">28</div>
+                    <div to36   dozen3  col2    black     odd      n="29"    class="square">29</div>
+                    <div to36   dozen3  col3    red       even     n="30"    class="square">30</div>
+                    <div to36   dozen3  col1    black     odd      n="31"    class="square">31</div>
+                    <div to36   dozen3  col2    red       even     n="32"    class="square">32</div>
+                    <div to36   dozen3  col3    black     odd      n="33"    class="square">33</div>
+                    <div to36   dozen3  col1    red       even     n="34"    class="square">34</div>
+                    <div to36   dozen3  col2    black     odd      n="35"    class="square">35</div>
+                    <div to36   dozen3  col3    red       even     n="36"    class="square">36</div>
+
+                    <div n="col1" onmouseout="render.blinkOut()" onmouseover="render.blink('col1')" class="square cs-3">2to18</div>
+                    <div n="col2" onmouseout="render.blinkOut()" onmouseover="render.blink('col2')" class="square">2to18</div>
+                    <div n="col3" onmouseout="render.blinkOut()" onmouseover="render.blink('col3')" class="square">2to18</div>
+
+                </div>
+            </div>
+            
+
+            <!-- message win -->
+            <!-- 
+            <div class="alert fade-in">
+                <div class="alert-in zoom-in">
+                    <p>Ganhou</p>
+                    <h1>U$ 1000,00</h1>
+                </div>
+            </div>
+            -->
+
+            <footer id="footer" class="footer fixed bottom transition ty100 z-2">
+                
+                <!-- buttons -->
+                <div class="footer-line j-around flex">
+                    <div class="zoom" onclick="render.coinRemoveLast()">
+                        <img src="imgs/svg/btn-back.svg" width="50px">    
+                        <p class="font-style-1">UNDO</p>
+                    </div>
+                    <div class="zoom" onclick="render.coinRemoveAll()">
+                        <img src="imgs/svg/btn-clean.svg" width="50px">    
+                        <p class="font-style-1">CLEAR</p>
+                    </div>
+                    <div class="">
+                        <div id="div_chosen" class="chosen chosen-red">36</div>
+                        <p class="font-style-1" style="margin: 5px 0px">ESCOLHA</p>
+                    </div>
+                    <div class="zoom" onclick="render.play(parseInt(Math.random()*36))">
+                        <img src="imgs/svg/btn-play.svg" width="50px">    
+                        <p class="font-style-1">PLAY</p>
+                    </div>
+                    <div class="zoom" onclick="render.menuHide()">
+                        <img src="imgs/svg/btn-close.svg" width="50px">    
+                        <p class="font-style-1">CLOSE</p>
+                    </div>
+                </div>
+
+                <!-- coins choices -->
+
+                <div class="footer-line">
+                    <div class="flex j-center m-auto gap-5 flex-wrap">
+                        <img draggable="false" id="coin1"    onclick="Audios.select2(); render.coinAdd(1)" class="zoom" style="width: 50px;" src="imgs/svg/coin-1.svg">
+                        <img draggable="false" id="coin5"    onclick="Audios.select2(); render.coinAdd(5)" class="zoom" style="width: 50px;" src="imgs/svg/coin-5.svg">
+                        <img draggable="false" id="coin10"   onclick="Audios.select2(); render.coinAdd(10)" class="zoom" style="width: 50px;" src="imgs/svg/coin-10.svg">
+                        <img draggable="false" id="coin25"   onclick="Audios.select2(); render.coinAdd(25)" class="zoom" style="width: 50px;" src="imgs/svg/coin-25.svg">
+                        <img draggable="false" id="coin50"   onclick="Audios.select2(); render.coinAdd(50)" class="zoom" style="width: 50px;" src="imgs/svg/coin-50.svg">
+                        <img draggable="false" id="coin100"  onclick="Audios.select2(); render.coinAdd(100)" class="zoom" style="width: 50px;" src="imgs/svg/coin-100.svg">
+                        <img draggable="false" id="coin500"  onclick="Audios.select2(); render.coinAdd(500)" class="zoom" style="width: 50px;" src="imgs/svg/coin-500.svg">
+                        <img draggable="false" id="coin1000" onclick="Audios.select2(); render.coinAdd(1000)" class="zoom" style="width: 50px;" src="imgs/svg/coin-1000.svg">
+                    </div>
+                </div>
+
+                 <!-- coins receive -->
+                <div id="coins_left" class="flex o-hidden" style="height: 100px; padding: 1em">
+                    <!-- <div id="coins_left" class="flex bg-gray w-full" style="height: 100px; padding: 1em; position: fixed;"> -->
+                    <img id="coin0" style="width: 50px;" src="imgs/svg/coin-0.svg">
+                </div>
+
+              
+                <!-- footer -->
+                <div class="footer-end">
+                    <div class="left">
+                        <p class="t-blue-1">SEU SALDO</p>
+                        <h1 id="div_balance" class="t-gray-1">U$ 500,00</h1>
+                    </div>
+                    <div class="right">
+                        <p class="t-blue-1">APOSTA</p>
+                        <h1 id="div_bet" class="t-gray-1">U$ 0,00</h1>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <img onclick="render.menuShow()" id="btn_float_menu" src='imgs/svg/btn-menu.svg'>
+
+    <script src="js/js.js"></script>
+    <script src="js/Connection.js"></script>
+    <script src="js/Objects.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/Render.js"></script>
+    <script src="js/Users.js"></script>
+    <script src="js/Time.js"></script>
+    <script src="js/Start.js"></script>
+
+
 </body>
 </html>

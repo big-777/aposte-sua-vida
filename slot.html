@@ -1,358 +1,454 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Slot Machine Web Game</title>
-  <style>
-    /* Global Styles & Dark Theme */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header, footer {
-      background-color: #1f1f1f;
-      padding: 10px 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    .container {
-      flex: 1;
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      text-align: center;
-    }
-    .display {
-      margin-bottom: 20px;
-    }
-    .credits, .betDisplay {
-      font-size: 1.2rem;
-      margin: 10px 0;
-    }
-    /* Bet Buttons Styles */
-    #betButtons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .bet-button {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #007BFF;
-      background-color: #007BFF;
-      color: #fff;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-      /* Use Flexbox to center text both horizontally and vertically */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .bet-button.active {
-      background-color: #0056b3;
-      transform: scale(1.1);
-    }
-    /* Slot Machine Layout */
-    .slot-machine {
-      background: #222;
-      border: 2px solid #444;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .reels {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
-    .reel {
-      width: 80px;
-      height: 80px;
-      background: #1e1e1e;
-      border: 2px solid #333;
-      border-radius: 10px;
-      font-size: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-    /* Button Styles */
-    button {
-      background-color: #007BFF;
-      border: none;
-      color: #fff;
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #spinButton {
-      margin-top: 10px;
-    }
-    /* Message */
-    #message {
-      margin-top: 15px;
-      font-size: 1.2rem;
-      min-height: 1.2em;
-    }
-    /* Winning Combinations Table */
-    #winCombinations {
-      margin-top: 30px;
-      text-align: center;
-    }
-    #winCombinations table {
-      margin: 0 auto;
-      border-collapse: collapse;
-      width: 90%;
-      max-width: 600px;
-    }
-    #winCombinations th, #winCombinations td {
-      border: 1px solid #444;
-      padding: 10px;
-      text-align: center;
-    }
-    #winCombinations th {
-      background-color: #1f1f1f;
-      font-size: 1rem;
-    }
-    #winCombinations td {
-      font-size: 0.9rem;
-    }
-    footer {
-      font-size: 0.9rem;
-    }
-    /* Responsive */
-    @media (max-width: 600px) {
-      .reels {
-        gap: 10px;
-      }
-      .reel {
-        width: 60px;
-        height: 60px;
-        font-size: 2.5rem;
-      }
-      .bet-button {
-        width: 40px;
-        height: 40px;
-        font-size: 0.9rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Slot Machine</h1>
-  </header>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Machine</title>
 
-  <div class="container">
-    <div class="display">
-      <div class="credits">Credits: <span id="credits">676767</span></div>
-      <div class="betDisplay">Current Bet: <span id="currentBet">0</span></div>
-      <div id="betButtons">
-        <button class="bet-button" data-value="10">10</button>
-        <button class="bet-button" data-value="20">20</button>
-        <button class="bet-button" data-value="50">50</button>
-        <button class="bet-button" data-value="100">100</button>
-        <button class="bet-button" data-value="all">ALL-IN</button>
-      </div>
-    </div>
-    <div class="slot-machine">
-      <div class="reels">
-        <div class="reel" id="reel1">?</div>
-        <div class="reel" id="reel2">?</div>
-        <div class="reel" id="reel3">?</div>
-      </div>
-    </div>
-    <button id="spinButton">Spin</button>
-    <div id="message"></div>
-    <!-- Winning Combinations Table -->
-    <div id="winCombinations">
-      <h2>Winning Combinations</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Combination</th>
-            <th>Payout</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Three identical symbols</td>
-            <td>Bet x 10</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <footer>
-    © 2025 Bocaletto Luca
-  </footer>
-
-  <!-- Audio Elements -->
-  <audio id="spinSound" src="audio/spin.mp3"></audio>
-  <audio id="winSound" src="audio/win.mp3"></audio>
-
-  <script>
-    /******** Global Variables ********/
-    const symbols = ['🍒', '🍋', '🍊', '🍇', '⭐', '7️⃣'];
-    let credits = 676767;
-    let currentBet = 0;
-    const reelElements = [
-      document.getElementById('reel1'),
-      document.getElementById('reel2'),
-      document.getElementById('reel3')
-    ];
-    const creditsDisplay = document.getElementById('credits');
-    const currentBetDisplay = document.getElementById('currentBet');
-    const spinButton = document.getElementById('spinButton');
-    const messageDiv = document.getElementById('message');
-    const spinSound = document.getElementById('spinSound');
-    const winSound = document.getElementById('winSound');
-    const betButtons = document.querySelectorAll('.bet-button');
-
-    let spinningIntervals = [];
-    let finalSymbols = [];
-
-    /******** Functions ********/
-    function updateCreditsDisplay() {
-      creditsDisplay.textContent = credits;
-    }
-    function updateCurrentBetDisplay() {
-      currentBetDisplay.textContent = currentBet;
-    }
-
-    function playSound(audioElement) {
-      audioElement.currentTime = 0;
-      audioElement.play().catch(err => console.log("Audio error:", err));
-    }
-
-    function startSpinning() {
-      reelElements.forEach((reel, index) => {
-        spinningIntervals[index] = setInterval(() => {
-          reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        }, 100);
-      });
-    }
-
-    function stopSpinning() {
-      return new Promise(resolve => {
-        finalSymbols = [];
-        spinningIntervals.forEach((interval, index) => {
-          setTimeout(() => {
-            clearInterval(spinningIntervals[index]);
-            const finalSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-            reelElements[index].textContent = finalSymbol;
-            finalSymbols[index] = finalSymbol;
-            if (index === spinningIntervals.length - 1) {
-              resolve(finalSymbols);
-            }
-          }, 1500 + index * 500);
-        });
-      });
-    }
-
-    function checkWin(finalSymbols, bet) {
-      if (finalSymbols.every(symbol => symbol === finalSymbols[0])) {
-        return bet * 10;
-      }
-      return 0;
-    }
-
-    function showMessage(text) {
-      messageDiv.textContent = text;
-    }
-
-    // Bet button handling: Toggle active state and update dynamic bet
-    betButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const value = button.getAttribute('data-value');
-        if (value === 'all') {
-          // Deactivate other bet buttons when ALL-IN is selected
-          betButtons.forEach(btn => {
-            if (btn.getAttribute('data-value') !== 'all') btn.classList.remove('active');
-          });
-          button.classList.add('active');
-          currentBet = credits;
-        } else {
-          const numericValue = parseInt(value, 10);
-          if (button.classList.contains('active')) {
-            button.classList.remove('active');
-            currentBet -= numericValue;
-          } else {
-            // Ensure ALL-IN is deactivated if active
-            betButtons.forEach(btn => {
-              if (btn.getAttribute('data-value') === 'all') {
-                btn.classList.remove('active');
-              }
-            });
-            button.classList.add('active');
-            currentBet += numericValue;
-          }
-          // Prevent bet from exceeding credits
-          if (currentBet > credits) {
-            currentBet = credits;
-          }
+    <style>
+        * {
+            box-sizing: border-box;
         }
-        updateCurrentBetDisplay();
-      });
-    });
 
-    spinButton.addEventListener("click", async () => {
-      let bet = currentBet;
-      if (bet <= 0) {
-        showMessage("Please select a bet amount.");
-        return;
-      }
-      if (bet > credits) {
-        showMessage("Insufficient credits!");
-        return;
-      }
-      credits -= bet;
-      updateCreditsDisplay();
-      showMessage("");
-      playSound(spinSound);
-      startSpinning();
-      spinButton.disabled = true;
-      betButtons.forEach(btn => btn.disabled = true);
-      const finalSymbols = await stopSpinning();
-      const winAmount = checkWin(finalSymbols, bet);
-      if (winAmount > 0) {
-        playSound(winSound);
-        credits += winAmount;
-        updateCreditsDisplay();
-        showMessage(`Congratulations! You won ${winAmount} credits!`);
-      } else {
-        showMessage("Better luck next time!");
-      }
-      spinButton.disabled = false;
-      betButtons.forEach(btn => { btn.disabled = false; btn.classList.remove('active'); });
-      currentBet = 0;
-      updateCurrentBetDisplay();
-    });
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            transition: background 0.3s ease;
+        }
 
-    updateCreditsDisplay();
-    updateCurrentBetDisplay();
-  </script>
+        /* Fundo vermelho no Modo Teste */
+        body.test-mode {
+            background: #8b0000;
+        }
+
+        .container {
+            width: 420px;
+            max-width: 95%;
+            padding: 30px;
+            text-align: center;
+            background: #222;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .credits {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .reels {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .reel {
+            width: 95px;
+            height: 95px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            font-size: 50px;
+        }
+
+        .bets {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: #444;
+            color: white;
+        }
+
+        button:hover {
+            background: #666;
+        }
+
+        #spin {
+            width: 100%;
+            margin-top: 10px;
+            padding: 15px;
+            font-size: 20px;
+            background: #168cff;
+        }
+
+        #spin:hover {
+            background: #006dcc;
+        }
+
+        #message {
+            min-height: 25px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .bet-info {
+            margin-top: 10px;
+            color: #bbb;
+        }
+
+        .test-info {
+            margin-top: 15px;
+            color: #ff5555;
+            font-size: 13px;
+            display: none;
+        }
+
+        body.test-mode .test-info {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1> SLOT MACHINE</h1>
+
+        <div class="credits">
+            Créditos: <span id="credits">200</span>
+        </div>
+
+        <div class="reels">
+            <div class="reel" id="reel1">❔</div>
+            <div class="reel" id="reel2">❔</div>
+            <div class="reel" id="reel3">❔</div>
+        </div>
+
+        <div class="bets">
+            <button onclick="setBet(10)">10</button>
+            <button onclick="setBet(20)">20</button>
+            <button onclick="setBet(50)">50</button>
+            <button onclick="setBet(100)">100</button>
+            <button onclick="allIn()">ALL-IN</button>
+        </div>
+
+        <div class="bet-info">
+            Aposta: <span id="bet">10</span>
+        </div>
+
+        <button id="spin" onclick="spin()">
+            GIRAR
+        </button>
+
+        <div id="message"></div>
+
+        <div class="test-info">
+            
+        </div>
+
+    </div>
+
+    <script>
+
+        // =========================
+        // CONFIGURAÇÕES
+        // =========================
+
+        let credits = 200;
+        let bet = 10;
+
+        let testMode = false;
+
+        let spacePresses = 0;
+        let spaceTimer = null;
+
+        const symbols = [
+            "🍒",
+            "🍋",
+            "🍊",
+            "🍇",
+            "⭐",
+            "7️⃣",
+            "🎇"
+        ];
+
+        // =========================
+        // ELEMENTOS
+        // =========================
+
+        const creditsElement = document.getElementById("credits");
+        const betElement = document.getElementById("bet");
+        const messageElement = document.getElementById("message");
+
+        const reel1 = document.getElementById("reel1");
+        const reel2 = document.getElementById("reel2");
+        const reel3 = document.getElementById("reel3");
+
+
+        // =========================
+        // ATUALIZAR CRÉDITOS
+        // =========================
+
+        function updateCredits() {
+            creditsElement.textContent = credits;
+        }
+
+
+        // =========================
+        // ESCOLHER APOSTA
+        // =========================
+
+        function setBet(value) {
+
+            if (value > credits) {
+                messageElement.textContent = "Você não tem créditos suficientes.";
+                return;
+            }
+
+            bet = value;
+            betElement.textContent = bet;
+
+            messageElement.textContent = "";
+        }
+
+
+        // =========================
+        // ALL-IN
+        // =========================
+
+        function allIn() {
+
+            if (credits <= 0) {
+                messageElement.textContent = "Você não tem créditos.";
+                return;
+            }
+
+            bet = credits;
+            betElement.textContent = bet;
+
+            messageElement.textContent = "ALL-IN selecionado!";
+        }
+
+
+        // =========================
+        // PEGAR SÍMBOLO ALEATÓRIO
+        // =========================
+
+        function randomSymbol() {
+
+            const index = Math.floor(Math.random() * symbols.length);
+
+            return symbols[index];
+        }
+
+
+        // =========================
+        // GIRAR
+        // =========================
+
+        function spin() {
+
+            if (credits < bet) {
+                messageElement.textContent = "Créditos insuficientes!";
+                return;
+            }
+
+            if (bet <= 0) {
+                messageElement.textContent = "Escolha uma aposta.";
+                return;
+            }
+
+            // Retira a aposta
+            credits -= bet;
+
+            updateCredits();
+
+            messageElement.textContent = "Girando...";
+
+            let result1;
+            let result2;
+            let result3;
+
+
+            
+            if (testMode) {
+
+                result1 = randomSymbol();
+                result2 = randomSymbol();
+                result3 = randomSymbol();
+
+                // Se os três forem iguais,
+                // troca o terceiro por outro símbolo.
+                if (
+                    result1 === result2 &&
+                    result2 === result3
+                ) {
+
+                    let newSymbol;
+
+                    do {
+                        newSymbol = randomSymbol();
+                    } while (newSymbol === result1);
+
+                    result3 = newSymbol;
+                }
+
+            }
+
+            // =====================================
+            // MODO NORMAL
+            // =====================================
+            //
+            // Aqui é totalmente aleatório.
+            // Não existe nenhuma alteração.
+            //
+            else {
+
+                result1 = randomSymbol();
+                result2 = randomSymbol();
+                result3 = randomSymbol();
+            }
+
+
+            // Mostra os resultados
+
+            setTimeout(() => {
+
+                reel1.textContent = result1;
+
+            }, 300);
+
+            setTimeout(() => {
+
+                reel2.textContent = result2;
+
+            }, 600);
+
+            setTimeout(() => {
+
+                reel3.textContent = result3;
+
+                // =========================
+                // VERIFICAR RESULTADO
+                // =========================
+
+                if (
+                    result1 === result2 &&
+                    result2 === result3
+                ) {
+
+                    const prize = bet * 10;
+
+                    credits += prize;
+
+                    updateCredits();
+
+                    messageElement.textContent =
+                        " GANHOU! +" + prize + " créditos!";
+
+                } else {
+
+                    messageElement.textContent =
+                        "Não foi dessa vez.";
+
+                }
+
+            }, 900);
+        }
+
+
+        // =========================
+        // ATIVAR MODO TESTE
+        // =========================
+        //
+        // Aperte ESPAÇO 5 vezes rapidamente.
+        //
+        // =========================
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.code !== "Space") {
+                return;
+            }
+
+            event.preventDefault();
+
+            spacePresses++;
+
+            clearTimeout(spaceTimer);
+
+            // Se demorar muito entre os espaços,
+            // reinicia a contagem.
+
+            spaceTimer = setTimeout(() => {
+
+                spacePresses = 0;
+
+            }, 1500);
+
+
+            // 5 espaços
+
+            if (spacePresses >= 5) {
+
+                spacePresses = 0;
+
+                testMode = !testMode;
+
+
+                // =========================
+                // ATIVAR
+                // =========================
+
+                if (testMode) {
+
+                    document.body.classList.add("test-mode");
+
+                    messageElement.textContent =
+                        "()";
+
+                }
+
+                
+                else {
+
+                    document.body.classList.remove("test-mode");
+
+                    messageElement.textContent =
+                        "()";
+
+                }
+
+            }
+
+        });
+
+
+        // =========================
+        // INICIALIZAÇÃO
+        // =========================
+
+        updateCredits();
+        betElement.textContent = bet;
+
+    </script>
+
 </body>
 </html>
