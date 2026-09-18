@@ -22,7 +22,6 @@
             transition: background 0.3s ease;
         }
 
-        /* Fundo vermelho no Modo Teste */
         body.test-mode {
             background: #8b0000;
         }
@@ -122,6 +121,12 @@
         body.test-mode .test-info {
             display: block;
         }
+
+        .keyboard-info {
+            margin-top: 18px;
+            color: #888;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -129,7 +134,7 @@
 
     <div class="container">
 
-        <h1> SLOT MACHINE</h1>
+        <h1>🎰 SLOT MACHINE</h1>
 
         <div class="credits">
             Créditos: <span id="credits">200</span>
@@ -159,8 +164,10 @@
 
         <div id="message"></div>
 
-        <div class="test-info">
-            
+        <div class="test-info"></div>
+
+        <div class="keyboard-info">
+            Teclas: 1 = 10 | 2 = 20 | 3 = 50 | 4 = 100 | 5 = ALL-IN | ENTER = GIRAR
         </div>
 
     </div>
@@ -173,7 +180,6 @@
 
         let credits = 200;
         let bet = 10;
-
         let testMode = false;
 
         let spacePresses = 0;
@@ -201,7 +207,6 @@
         const reel2 = document.getElementById("reel2");
         const reel3 = document.getElementById("reel3");
 
-
         // =========================
         // ATUALIZAR CRÉDITOS
         // =========================
@@ -210,7 +215,6 @@
             creditsElement.textContent = credits;
         }
 
-
         // =========================
         // ESCOLHER APOSTA
         // =========================
@@ -218,16 +222,15 @@
         function setBet(value) {
 
             if (value > credits) {
-                messageElement.textContent = "Você não tem créditos suficientes.";
+                messageElement.textContent =
+                    "Você não tem créditos suficientes.";
                 return;
             }
 
             bet = value;
             betElement.textContent = bet;
-
             messageElement.textContent = "";
         }
-
 
         // =========================
         // ALL-IN
@@ -236,28 +239,24 @@
         function allIn() {
 
             if (credits <= 0) {
-                messageElement.textContent = "Você não tem créditos.";
+                messageElement.textContent =
+                    "Você não tem créditos.";
                 return;
             }
 
             bet = credits;
             betElement.textContent = bet;
-
             messageElement.textContent = "ALL-IN selecionado!";
         }
 
-
         // =========================
-        // PEGAR SÍMBOLO ALEATÓRIO
+        // SÍMBOLO ALEATÓRIO
         // =========================
 
         function randomSymbol() {
-
             const index = Math.floor(Math.random() * symbols.length);
-
             return symbols[index];
         }
-
 
         // =========================
         // GIRAR
@@ -266,18 +265,18 @@
         function spin() {
 
             if (credits < bet) {
-                messageElement.textContent = "Créditos insuficientes!";
+                messageElement.textContent =
+                    "Créditos insuficientes!";
                 return;
             }
 
             if (bet <= 0) {
-                messageElement.textContent = "Escolha uma aposta.";
+                messageElement.textContent =
+                    "Escolha uma aposta.";
                 return;
             }
 
-            // Retira a aposta
             credits -= bet;
-
             updateCredits();
 
             messageElement.textContent = "Girando...";
@@ -286,16 +285,17 @@
             let result2;
             let result3;
 
+            // =========================
+            // MODO TESTE
+            // Nunca permite 3 iguais
+            // =========================
 
-            
             if (testMode) {
 
                 result1 = randomSymbol();
                 result2 = randomSymbol();
                 result3 = randomSymbol();
 
-                // Se os três forem iguais,
-                // troca o terceiro por outro símbolo.
                 if (
                     result1 === result2 &&
                     result2 === result3
@@ -310,35 +310,24 @@
                     result3 = newSymbol;
                 }
 
-            }
+            } else {
 
-            // =====================================
-            // MODO NORMAL
-            // =====================================
-            //
-            // Aqui é totalmente aleatório.
-            // Não existe nenhuma alteração.
-            //
-            else {
-
+                // MODO NORMAL
                 result1 = randomSymbol();
                 result2 = randomSymbol();
                 result3 = randomSymbol();
             }
 
-
-            // Mostra os resultados
+            // =========================
+            // MOSTRAR RESULTADOS
+            // =========================
 
             setTimeout(() => {
-
                 reel1.textContent = result1;
-
             }, 300);
 
             setTimeout(() => {
-
                 reel2.textContent = result2;
-
             }, 600);
 
             setTimeout(() => {
@@ -357,32 +346,79 @@
                     const prize = bet * 10;
 
                     credits += prize;
-
                     updateCredits();
 
                     messageElement.textContent =
-                        " GANHOU! +" + prize + " créditos!";
+                        "GANHOU! +" + prize + " créditos!";
 
                 } else {
 
                     messageElement.textContent =
                         "Não foi dessa vez.";
-
                 }
 
             }, 900);
         }
 
-
         // =========================
-        // ATIVAR MODO TESTE
+        // TECLAS DO TECLADO
         // =========================
         //
-        // Aperte ESPAÇO 5 vezes rapidamente.
+        // 1 = aposta 10
+        // 2 = aposta 20
+        // 3 = aposta 50
+        // 4 = aposta 100
+        // 5 = ALL-IN
+        // ENTER = GIRAR
         //
+        // O ESP32, através do programa Python,
+        // envia essas mesmas teclas para o Windows.
         // =========================
 
         document.addEventListener("keydown", function(event) {
+
+            // Evita que o navegador faça ações padrão
+            // para as teclas usadas pelo projeto.
+
+            if (event.key === "1") {
+                event.preventDefault();
+                setBet(10);
+                return;
+            }
+
+            if (event.key === "2") {
+                event.preventDefault();
+                setBet(20);
+                return;
+            }
+
+            if (event.key === "3") {
+                event.preventDefault();
+                setBet(50);
+                return;
+            }
+
+            if (event.key === "4") {
+                event.preventDefault();
+                setBet(100);
+                return;
+            }
+
+            if (event.key === "5") {
+                event.preventDefault();
+                allIn();
+                return;
+            }
+
+            if (event.key === "Enter") {
+                event.preventDefault();
+                spin();
+                return;
+            }
+
+            // =========================
+            // 5 ESPAÇOS = MODO TESTE
+            // =========================
 
             if (event.code !== "Space") {
                 return;
@@ -394,52 +430,31 @@
 
             clearTimeout(spaceTimer);
 
-            // Se demorar muito entre os espaços,
-            // reinicia a contagem.
-
             spaceTimer = setTimeout(() => {
-
                 spacePresses = 0;
-
             }, 1500);
-
-
-            // 5 espaços
 
             if (spacePresses >= 5) {
 
                 spacePresses = 0;
-
                 testMode = !testMode;
-
-
-                // =========================
-                // ATIVAR
-                // =========================
 
                 if (testMode) {
 
                     document.body.classList.add("test-mode");
 
-                    messageElement.textContent =
-                        "()";
+                    // Não mostra mensagem na tela.
+                    messageElement.textContent = "";
 
-                }
-
-                
-                else {
+                } else {
 
                     document.body.classList.remove("test-mode");
 
-                    messageElement.textContent =
-                        "()";
-
+                    // Não mostra mensagem na tela.
+                    messageElement.textContent = "";
                 }
-
             }
-
         });
-
 
         // =========================
         // INICIALIZAÇÃO
